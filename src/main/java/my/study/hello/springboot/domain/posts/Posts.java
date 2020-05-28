@@ -35,7 +35,8 @@ public class Posts {
     }
 }
 
-/* Do not create Setter methods in Entity class
+/* [Note]
+ * Do not create Setter methods in Entity class
  * 1. if you need to change value of column, make a method which shows purpose and objective clearly
  *
  * 2. if you want to insert data into a database, fulfill data into a constructor and then insert into a database
