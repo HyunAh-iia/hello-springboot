@@ -26,5 +26,18 @@ repositories {
 
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.projectlombok:lombok')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    // lombok constructor issue - gradle v5.x : https://github.com/jojoldu/freelec-springboot2-webservice/issues/78
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
+}
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
