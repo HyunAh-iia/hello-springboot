@@ -28,6 +28,10 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.projectlombok:lombok')
 
+    // Spring Data Jpa & in-memory RDB
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+    compile('com.h2database:h2')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
 
     // lombok constructor issue - gradle v5.x : https://github.com/jojoldu/freelec-springboot2-webservice/issues/78

@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@RunWith(SpringRunner.class) // Run other constructor instead of Junit's constructor when testing
+@RunWith(SpringRunner.class) // Run other runner instead of Junit's runner when testing, connect springboot test and Junit.
 @WebMvcTest(controllers = HelloController.class)
 // annotation focus on Web(Spring MVC) - you can use @Controller, @ControllerAdvice, but not @Service, @Component, @Repository
 public class HelloControllerTest {
