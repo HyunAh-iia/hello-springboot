@@ -37,9 +37,11 @@ public class HelloControllerTest {
         String name = "hello";
         int amount = 1010;
 
-        mvc.perform(get("/hello/dto").param("name", name).param("amount", String.valueOf(amount)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name", is(name)))
-                .andExpect(jsonPath("$.amount", is(amount)));
+        mvc.perform(get("/hello/dto")
+                .param("name", name) // @RequestParam("param") : means to get param from requests
+                .param("amount", String.valueOf(amount))) // .param : only String type, should change type int, date to String
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.name", is(name)))
+            .andExpect(jsonPath("$.amount", is(amount)));
     }
 }
