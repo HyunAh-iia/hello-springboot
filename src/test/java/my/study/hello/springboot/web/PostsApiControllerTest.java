@@ -1,4 +1,4 @@
-package my.study.hello.springboot;
+package my.study.hello.springboot.web;
 
 import lombok.extern.slf4j.Slf4j;
 import my.study.hello.springboot.domain.posts.Posts;
