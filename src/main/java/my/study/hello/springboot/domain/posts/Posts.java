@@ -3,6 +3,7 @@ package my.study.hello.springboot.domain.posts;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import my.study.hello.springboot.domain.BaseTimeEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,7 @@ import javax.persistence.Id;
 @Getter // lombok
 @NoArgsConstructor // lombok - make default constructor
 @Entity // JPA annotation - shows the class is linked with tables
-public class Posts {
+public class Posts extends BaseTimeEntity {
 
     @Id // shows the field is a pk key of the table
     @GeneratedValue(strategy = GenerationType.IDENTITY) // pk generate rule
