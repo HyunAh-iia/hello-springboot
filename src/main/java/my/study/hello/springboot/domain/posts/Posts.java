@@ -33,6 +33,15 @@ public class Posts {
         this.content = content;
         this.author = author;
     }
+
+    public void update(String title, String content) {
+        this.title = title;
+        this.content = content;
+
+        /* [Note] No update query
+         * Dirty checking of JPA ==> https://jojoldu.tistory.com/415
+         */
+    }
 }
 
 /* [Note]
