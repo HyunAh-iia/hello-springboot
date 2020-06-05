@@ -50,6 +50,12 @@ public class PostsService {
                 .map(PostsListResponseDto::new) // = .map(posts -> new PostsResponseDto(posts))
                 .collect(Collectors.toList());
     }
+
+    public void delete(Long id) {
+        postsRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id));
+        postsRepository.deleteById(id);
+    }
 }
 
 /* [Note]
