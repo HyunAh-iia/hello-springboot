@@ -35,6 +35,9 @@ dependencies {
     // Mustache for UI templates
     compile('org.springframework.boot:spring-boot-starter-mustache')
 
+    // Oauth2
+    compile('org.springframework.boot:spring-boot-starter-oauth2-client')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
 
     // lombok constructor issue - gradle v5.x : https://github.com/jojoldu/freelec-springboot2-webservice/issues/78
