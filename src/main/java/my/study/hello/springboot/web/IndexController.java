@@ -1,6 +1,7 @@
 package my.study.hello.springboot.web;
 
 import lombok.RequiredArgsConstructor;
+import my.study.hello.springboot.config.auth.LoginUser;
 import my.study.hello.springboot.config.auth.dto.SessionUser;
 import my.study.hello.springboot.service.posts.PostsService;
 import org.springframework.stereotype.Controller;
@@ -17,9 +18,8 @@ public class IndexController {
     private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
         model.addAttribute("posts", postsService.findAllDesc());
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
         if (user != null) {
             model.addAttribute("userName", user.getName());
         }
