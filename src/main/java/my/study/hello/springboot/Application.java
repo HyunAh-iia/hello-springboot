@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 /*
    Main class of the project
  */
-@EnableJpaAuditing // activate JPA Auditing
+//@EnableJpaAuditing // activate JPA Auditing // delete
 @SpringBootApplication // auto setting for springboot, beans, configuration
 public class Application {
     public static void main(String[] args) {

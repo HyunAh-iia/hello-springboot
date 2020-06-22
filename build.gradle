@@ -42,6 +42,9 @@ dependencies {
     // session storage
     compile('org.springframework.session:spring-session-jdbc')
 
+    // security
+    testCompile("org.springframework.security:spring-security-test")
+
 
     // lombok constructor issue - gradle v5.x : https://github.com/jojoldu/freelec-springboot2-webservice/issues/78
     annotationProcessor 'org.projectlombok:lombok'
