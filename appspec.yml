@@ -12,7 +12,7 @@ permissions:
     group: ec2-user
 
 hooks:
-  ApplicationInstall:
+  AfterInstall:
     - location: stop.sh # Stop a springboot that is not connect with nginx
       timeout: 60
       runas: ec2-user
@@ -20,7 +20,7 @@ hooks:
     - location: start.sh # Start a port that is not connet with nginx with new version of springboot
       timeout: 60
       runas: ec2-user
-  ApplicationService:
+  ValidateService:
     - location: health.sh # Check new version of springboot run successfully
       timeout: 60
       runas: ec2-user
