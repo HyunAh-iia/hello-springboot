@@ -31,6 +31,16 @@ deploy:
     acl: private # private access to zip
     local_dir: deploy # the directory which before_deploy makes
     wait-until-deployed: true
+  - provider: codedeploy
+      access_key_id: $AWS_ACCESS_KEY # setting value at Travis repo settings
+      secret_access_key: $AWS_SECRET_KEY # setting value at Travis repo settings
+      bucket: study-hello-springboot-build
+      key: hello-springboot.zip
+      bundle_type: zip
+      application: hello-springboot
+      deployment_group: hello-springboot-group
+      region: ap-northeast-2
+      wait-until-deployed: true
 
 # When CI complete, notify by email
 notifications:
