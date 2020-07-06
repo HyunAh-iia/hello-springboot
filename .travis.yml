@@ -13,9 +13,25 @@ cache:
     - '$HOME/.m2/repository'
     - '$HOME/.gradle'
 
+# command after pushing at master branch
 script: "./gradlew clean build"
 
-# CI 실행 완료 시 메일 알람
+before_deploy:
+  - zip -r hello-springboot
+  - mkdir -p deploy
+  - mv hello-springboot.zip deploy/hello-springboot.zip
+
+deploy:
+  access_key_id: $AWS_ACCESS_KEY # setting value at Travis repo settings
+  secret_access_key: $AWS_SECRET_KEY # setting value at Travis repo settings
+  bucket: study-hello-springboot-build
+  region: ap-northeast-2
+  skip_cleanup: true
+  acl: private # private access to zip
+  local_dir: deploy # the directory which before_deploy makes
+  wait-until-deployed: true
+
+# When CI complete, notify by email
 notifications:
   email:
     recipients:
