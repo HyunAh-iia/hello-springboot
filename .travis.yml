@@ -17,9 +17,13 @@ cache:
 script: "./gradlew clean build"
 
 before_deploy:
-  - zip -r hello-springboot *
-  - mkdir -p deploy
-  - mv hello-springboot.zip deploy/hello-springboot.zip
+  - mkdir -p before-deploy
+  - cp scripts/*.sh before-deploy/
+  - cp appspec.yml before-deploy/
+  - cp build/libs/*.jar before-deploy/
+  - cd before-deploy && zip -r before-deploy *
+  - cd ../ && mkdir -p deploy
+  - mv before-deploy/before-deploy.zip deploy/hello-springboot.zip
 
 deploy:
   - provider: s3
@@ -31,6 +35,7 @@ deploy:
     acl: private # private access to zip
     local_dir: deploy # the directory which before_deploy makes
     wait-until-deployed: true
+
   - provider: codedeploy
       access_key_id: $AWS_ACCESS_KEY # setting value at Travis repo settings
       secret_access_key: $AWS_SECRET_KEY # setting value at Travis repo settings
