@@ -4,4 +4,3 @@
 /build/
 /build/classes/java/main/
 /src/main/resources/application-oauth.properties
-/database.yml.properties
