@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // annotation focus on Web(Spring MVC) - you can use @Controller, @ControllerAdvice, but not @Service, @Component, @Repository
 public class HelloControllerTest {
 
-    @Autowired // injected with beans from spring
+    @Autowired // injected with beans from spring.
     private MockMvc mvc; // start point to test spring MVC, using for testing web API(HTTP GET, POST...)
 
     @WithMockUser(roles = "USER")
