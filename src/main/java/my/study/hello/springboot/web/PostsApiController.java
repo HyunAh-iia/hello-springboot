@@ -7,6 +7,8 @@ import my.study.hello.springboot.web.dto.PostsSaveRequestDto;
 import my.study.hello.springboot.web.dto.PostsUpdateRequestDto;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RestController
 public class PostsApiController {
@@ -14,12 +16,12 @@ public class PostsApiController {
     private final PostsService postsService;
 
     @PostMapping("/api/v1/posts")
-    public long save(@RequestBody PostsSaveRequestDto requestDto) {
+    public long save(@Valid @RequestBody PostsSaveRequestDto requestDto) {
         return postsService.save(requestDto);
     }
 
     @PutMapping("/api/v1/posts/{id}")
-    public long update(@PathVariable Long id, @RequestBody PostsUpdateRequestDto requestsDto) {
+    public long update(@PathVariable Long id, @Valid @RequestBody PostsUpdateRequestDto requestsDto) {
         return postsService.update(id, requestsDto);
     }
 

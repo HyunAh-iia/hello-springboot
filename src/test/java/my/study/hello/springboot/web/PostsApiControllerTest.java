@@ -1,9 +1,12 @@
 package my.study.hello.springboot.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.tools.javac.util.DefinedBy;
 import lombok.extern.slf4j.Slf4j;
 import my.study.hello.springboot.domain.posts.Posts;
 import my.study.hello.springboot.domain.posts.PostsRepository;
+import my.study.hello.springboot.exception.ApiError;
 import my.study.hello.springboot.web.dto.PostsSaveRequestDto;
 import my.study.hello.springboot.web.dto.PostsUpdateRequestDto;
 import org.junit.After;
@@ -19,6 +22,8 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -26,8 +31,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Slf4j
@@ -59,6 +64,56 @@ public class PostsApiControllerTest {
     @After
     public void tearDown() throws Exception {
         postsRepository.deleteAll();
+    }
+
+    @Test
+    @WithMockUser(roles="USER")
+    public void whenMethodArgumentMismatch_thenBadRequest() throws Exception {
+        // 시스템에 정의된 에러
+        // given
+        String title = "";
+        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+                .title(title)
+                .author("")
+                .build();
+
+        String url = "http://localhost:" + port + "/api/v1/posts";
+
+        // when
+        MvcResult result = mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+
+        ApiError error = mapper.readValue(content, ApiError.class);
+        log.error("!@@@@@@");
+        log.error(mapper.writeValueAsString(error));
+    }
+
+    @Test
+    @WithMockUser(roles="USER")
+    public void whenDeleteWrongUser_thenException() throws Exception {
+        // 비즈니스 로직 오류
+
+        // given
+        String url = "http://localhost:" + port + "/api/v1/posts/1";
+
+        // when
+        MvcResult result = mvc.perform(delete(url)
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content("1"))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+
+        ApiError error = mapper.readValue(content, ApiError.class);
+        log.error("!@@@@@@");
+        log.error(mapper.writeValueAsString(error));
     }
 
     @Test
