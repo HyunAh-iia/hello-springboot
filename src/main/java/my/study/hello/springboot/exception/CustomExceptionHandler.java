@@ -1,5 +1,6 @@
 package my.study.hello.springboot.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @ControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -107,9 +109,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
         String classType = ex.getClass().getSimpleName();
 
-        logger.error("!@@@@@@@@@handleAll@@@");
-        logger.error(classType);
-        logger.error("error", ex);
+        log.error(classType);
+        log.error("error", ex);
 
         final ApiError apiError = new ApiError(classType, HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
         return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
