@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import my.study.hello.springboot.domain.posts.Posts;
 import my.study.hello.springboot.domain.posts.PostsRepository;
 import my.study.hello.springboot.exception.ApiError;
+import my.study.hello.springboot.utils.JsonUtils;
 import my.study.hello.springboot.web.dto.PostsSaveRequestDto;
 import my.study.hello.springboot.web.dto.PostsUpdateRequestDto;
 import org.junit.After;
@@ -68,7 +69,7 @@ public class PostsApiControllerTest {
 
     @Test
     @WithMockUser(roles="USER")
-    public void whenMethodArgumentMismatch_thenBadRequest() throws Exception {
+    public void whenMethodArgumentMismatch_thenException() throws Exception {
         // 시스템에 정의된 에러
         // given
         String title = "";
@@ -87,17 +88,16 @@ public class PostsApiControllerTest {
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
+        ApiError apiError = JsonUtils.readValue(content, ApiError.class);
 
-        ApiError error = mapper.readValue(content, ApiError.class);
-        log.error("!@@@@@@");
-        log.error(mapper.writeValueAsString(error));
+        assertThat(apiError.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(apiError.getType()).isEqualTo("MethodArgumentNotValidException");
     }
 
     @Test
     @WithMockUser(roles="USER")
-    public void whenDeleteWrongUser_thenException() throws Exception {
-        // 비즈니스 로직 오류
+    public void whenIllegalArgument_thenException() throws Exception {
+        // 비즈니스 로직 처리 중 의도적인 예외 발생(+메시지) - IllegalArgumentException
 
         // given
         String url = "http://localhost:" + port + "/api/v1/posts/1";
@@ -109,11 +109,10 @@ public class PostsApiControllerTest {
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
-        ObjectMapper mapper = new ObjectMapper();
+        ApiError apiError = JsonUtils.readValue(content, ApiError.class);
 
-        ApiError error = mapper.readValue(content, ApiError.class);
-        log.error("!@@@@@@");
-        log.error(mapper.writeValueAsString(error));
+        assertThat(apiError.getStatus()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(apiError.getType()).isEqualTo("IllegalArgumentException");
     }
 
     @Test

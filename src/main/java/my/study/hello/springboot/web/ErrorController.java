@@ -20,18 +20,10 @@ public class ErrorController {
         throw new Exception();
     }
 
-
     @GetMapping("/error/exception-message")
     public void throwExceptionWithMessage() throws Exception {
         throw new Exception("메시지를 함께 넘겼다.");
     }
-
-    @Valid
-    @GetMapping("/error/method-argument-not-valid/{id}")
-    public void throwMethodArgumentNotValid(@PathVariable @Min(value = 5)Long id) throws Exception {
-
-    }
-
 
     @GetMapping("/error/illegal-argument")
     public void throwIllegalArgumentException() {

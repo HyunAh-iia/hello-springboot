@@ -1,6 +1,8 @@
 package my.study.hello.springboot.exception;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
+import my.study.hello.springboot.utils.JsonUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +33,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         // BindException: This exception is thrown when fatal binding errors occur.
 
         String classType = ex.getClass().getSimpleName();
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
 
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
@@ -40,6 +42,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
             errors.add(error.getObjectName() + ": " + error.getDefaultMessage());
         }
         final ApiError apiError = new ApiError(classType, HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+
+        logApiError(apiError, ex);
+
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
 
@@ -49,7 +54,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         // MethodArgumentNotValidException: This exception is thrown when argument annotated with @Valid failed validation:
 
         String classType = ex.getClass().getSimpleName();
-        final List<String> errors = new ArrayList<String>();
+        final List<String> errors = new ArrayList<>();
 
         for (FieldError error : ex.getBindingResult().getFieldErrors()) {
             errors.add(error.getField() + ": " + error.getDefaultMessage());
@@ -59,6 +64,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ApiError apiError = new ApiError(classType, HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
+
+        logApiError(apiError, ex);
+
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
 
@@ -72,6 +80,9 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         String error = ex.getParameterName() + " parameter is missing";
 
         ApiError apiError = new ApiError(classType, HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
+
+        logApiError(apiError, ex);
+
         return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
     }
 
@@ -89,7 +100,10 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         }
 
         ApiError apiError = new ApiError(classType, HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+
+        logApiError(apiError, ex);
+
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({ MethodArgumentTypeMismatchException.class })
@@ -101,18 +115,33 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
         String error = ex.getName() + " should be of type " + ex.getRequiredType().getName();
 
         ApiError apiError = new ApiError(classType, HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+
+        logApiError(apiError, ex);
+
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     // 500
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
-        String classType = ex.getClass().getSimpleName();
-
-        log.error(classType);
-        log.error("error", ex);
-
+        final String classType = ex.getClass().getSimpleName();
         final ApiError apiError = new ApiError(classType, HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+
+        log.error("!@@ exception", ex);
+        logApiError(apiError, ex);
+
+        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
+    private ApiError logApiError(ApiError apiError, Exception ex) {
+        try {
+            log.error(JsonUtils.writeValueAsPrettyString(apiError+"2"));
+        } catch (JsonProcessingException e) {
+
+            log.error("!@@ exception", ex);
+            log.error("!@@ JsonProcessingException - apiError response");
+        }
+
+        return apiError;
     }
 }
